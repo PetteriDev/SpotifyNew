@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html data-critters-container>
+<head>
+  <title>Spotify Artist Tracker</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #6e706f;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: #000;
+    }
+
+    header img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #000;
+      color: #fff;
+    }
+
+    td.artist-name,
+    td.artist-popularity {
+      vertical-align: top;
+    }
+
+  </style>
+<style>body{font-family:Arial,sans-serif;margin:0;padding:0}header{background-color:#000;padding:16px;display:flex;align-items:center}header img{width:40px;height:40px;margin-right:8px}header h1{color:#fff;font-size:24px;font-weight:700}table{border-collapse:collapse;width:100%;margin-top:24px}th{padding:8px;text-align:left;border-bottom:1px solid #ddd}tr:hover{background-color:#f5f5f5}</style><link rel="stylesheet" href="styles.c79a2bbc330a9f86.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.c79a2bbc330a9f86.css"></noscript></head>
+<body>
+  <header>
+    <img src="spotify_logo.png" alt="Spotify Logo">
+    <h1>Spotify Artist Tracker</h1>
+  </header>
+
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Enter artist name">
+    <button id="search-button" onclick="sendArtistName()">Search</button>
+  </div>
+
+  <table id="artists-table">
+    <tr>
+      <th>Artist Name</th>
+      <th>Artist Popularity</th>
+      <th>Track Name</th>
+      <th>Popularity Score</th>
+    </tr>
+  </table>
+
+  <script>
+    // Fetch artist data from the backend API when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchArtistData('');
+    });
+  
+    function sendArtistName() {
+  const artistName = document.getElementById('search-input').value;
+  fetch('http://localhost:5000/search-artist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ artistName })
+  })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error communicating with the server.');
+      }
+    })
+    .then(data => {
+      console.log(data);
+      fetchArtistData(artistName); // Fetch updated artist data
+      setTimeout(() => {
+        location.reload(); // Refresh the web browser after 0,5 seconds
+      }, 500);
+    })
+    .catch(error => console.error(error));
+}
+
+
+    
+function fetchArtistData(artistName) {
+  // Make a fetch request to the backend API
+  fetch(`http://localhost:3000/api/artists?name=${encodeURIComponent(artistName)}`)
+    .then(response => response.json())
+    .then(data => {
+      // Reverse the data array to display recently added artists at the top
+      const reversedData = data.reverse();
+
+      // Update the table with artist data
+      const table = document.getElementById('artists-table');
+      table.innerHTML = ""; // Clear existing table data
+
+      reversedData.forEach(artist => {
+        const artistName = artist.name || 'Unknown';
+        const artistPopularity = artist.artistPopularity || 'N/A';
+        const trackNames = artist.trackNames;
+        const popularityScores = artist.popularityScores;
+
+        const rowCount = Math.max(trackNames.length, popularityScores.length);
+
+        for (let i = 0; i < rowCount; i++) {
+          const row = document.createElement('tr');
+
+          if (i === 0) {
+            const nameCell = document.createElement('td');
+            nameCell.textContent = artistName;
+            nameCell.rowSpan = rowCount;
+            nameCell.classList.add('artist-name');
+            row.appendChild(nameCell);
+
+            const artistPopularityCell = document.createElement('td');
+            artistPopularityCell.textContent = artistPopularity;
+            artistPopularityCell.rowSpan = rowCount;
+            artistPopularityCell.classList.add('artist-popularity');
+            row.appendChild(artistPopularityCell);
+          }
+
+          const trackNameCell = document.createElement('td');
+          const popularityScoreCell = document.createElement('td');
+
+          if (i < trackNames.length) {
+            trackNameCell.textContent = trackNames[i];
+            popularityScoreCell.textContent = popularityScores[i];
+          }
+
+          row.appendChild(trackNameCell);
+          row.appendChild(popularityScoreCell);
+
+          table.appendChild(row);
+        }
+      });
+    })
+    .catch(error => console.error(error));
+}
+  </script>
+  <script src="runtime.95446903c4ae7db8.js" type="module"></script><script src="polyfills.4f6700916690c0e0.js" type="module"></script><script src="main.42f98ea6921d5c35.js" type="module"></script></body>
+  </html>

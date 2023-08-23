@@ -1,0 +1,26 @@
+{
+  "name": "spotify-tracker-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start-express\" \"npm run start-flask\"",
+    "start-express": "node index.js", 
+    "start-flask": "python search.py" 
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "*",
+    "express": "*",
+    "mongodb": "*",
+    "mongoose": "*",
+    "open": "*",
+    "openurl": "*"
+  },
+  "devDependencies": {
+    "concurrently": "*"
+  }
+}
