@@ -6,21 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"npm run start-express\" \"npm run start-flask\"",
-    "start-express": "node index.js", 
-    "start-flask": "python search.py" 
+    "start-express": "node index.js",
+    "start-flask": "python search.py"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "*",
-    "express": "*",
-    "mongodb": "*",
-    "mongoose": "*",
-    "open": "*",
-    "openurl": "*"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongodb": "^5.8.0",
+    "mongoose": "^7.4.4",
+    "open": "^9.1.0",
+    "openurl": "^1.1.1"
   },
   "devDependencies": {
-    "concurrently": "*"
+    "concurrently": "^8.2.1"
   }
 }
