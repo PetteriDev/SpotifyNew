@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Connect to the MongoDB database
-client = MongoClient('mongodb://127.0.0.1:27017')
+client = MongoClient(config.database)
 db = client['spotify']
 collection = db['search_input']
 

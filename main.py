@@ -10,7 +10,7 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-client = MongoClient('mongodb://127.0.0.1:27017')
+client = MongoClient(config.database)
 db = client['spotify']
 collection = db['search_input']
 

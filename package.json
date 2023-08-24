@@ -1,13 +1,14 @@
 {
-  "name": "spotify-tracker-backend",
+  "name": "spotify-new",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-    
-  },
+    "start": "node index.js && python search.py",
+    "start-express": "node index.js", 
+    "start-flask": "python search.py" 
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
