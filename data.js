@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const config = require('./config/database');
 const { exec } = require('child_process');
 
 // Connect to your MongoDB database
