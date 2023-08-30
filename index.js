@@ -20,6 +20,54 @@ const artistSchema = new mongoose.Schema({
 
 const Artist = mongoose.model('Artist', artistSchema);
 
+
+exec('python search.py', (error, stdout, stderr) => {
+  if (error) {
+    console.error('Failed to execute main.py:', error);
+    mongoose.connection.close();
+    console.log('MongoDB connection closed');
+    return;
+  }
+
+  // Parse the output from main.py
+  const lines = stdout.split('\n');
+  const artistName = lines[0].split(':')[1].trim();
+  const artistPopularity = parseInt(lines[1].split(':')[1].trim()) || 0;
+  const trackLines = lines.slice(2, lines.length - 1);
+  
+  const trackNames = trackLines.map((line) => {
+    const trackName = line.split('-')[0].trim();
+    return trackName;
+  });
+
+  const popularityScores = trackLines.map((line) => {
+    const popularityInfo = line.split(':')[1].trim();
+    const popularityScore = parseInt(popularityInfo) || 0;
+    return popularityScore;
+  });
+
+  // Create the artist document
+  const artist = new Artist({
+    name: artistName,
+    trackNames: trackNames,
+    popularityScores: popularityScores,
+    artistPopularity: artistPopularity
+  });
+
+  // Insert the artist into the database
+  artist.save()
+    .then(() => {
+      console.log('Artist added to the database');
+      printDatabaseInfo(Artist);
+    })
+    .catch((error) => {
+      console.error('Failed to insert artist:', error);
+      mongoose.connection.close();
+      console.log('MongoDB connection closed');
+    });
+});
+
+
 // Connect to your MongoDB database
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
